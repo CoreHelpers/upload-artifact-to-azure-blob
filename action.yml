@@ -35,7 +35,7 @@ runs:
         path: ${{ steps.artifactworkspace.outputs.build_workspace }}
 
     - name: Activate the frontend      
-      uses: CoreHelpers/upload-spa-to-azure-blob@v0.0.1
+      uses: CoreHelpers/upload-spa-to-azure-blob@v0.0.2
       with:       
         connectionstring: ${{ inputs.connectionstring }}
         container: ${{ inputs.container }}
