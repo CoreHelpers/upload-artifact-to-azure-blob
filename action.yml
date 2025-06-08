@@ -1,0 +1,32 @@
+name: 'Upload Artifact to Azure Blob'
+description: 'Deploys a frontend to Azure Blob and activates the index.html file at last'
+author: 'CoreHelpers Project'
+branding:
+  icon: 'upload-cloud'
+  color: 'purple'
+inputs:
+  connectionstring: 
+    required: true
+    type: string  
+  container:
+    required: true
+    type: string  
+  artifact:
+    required: true
+    type: string  
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Download frontend build      
+      uses: actions/download-artifact@v4.3.0
+      with:
+        name: ${{ inputs.artifact }}
+        path: ./build
+
+    - name: Activate the frontend      
+      uses: CoreHelpers/upload-spa-to-azure-blob@v0.0.1
+      with:       
+        connectionstring: ${{ inputs.connectionstring }}
+        container: ${{ inputs.container }}
+        source: ./build
