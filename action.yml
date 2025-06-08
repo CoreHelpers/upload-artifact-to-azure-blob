@@ -18,15 +18,24 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Create Workspace
+      shell: bash
+      run: |
+        GUID=$(uuidgen)
+        UNIQUE_DIR="${RUNNER_TEMP}/${GUID}"
+        mkdir -p "$UNIQUE_DIR"
+        echo "Created: $UNIQUE_DIR"
+        echo "build_workspace=$UNIQUE_DIR" >> "$GITHUB_OUTPUT"
+
     - name: Download frontend build      
       uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.artifact }}
-        path: ./build
+        path: ${{ steps.tempdir.outputs.build_workspace }}
 
     - name: Activate the frontend      
       uses: CoreHelpers/upload-spa-to-azure-blob@v0.0.1
       with:       
         connectionstring: ${{ inputs.connectionstring }}
         container: ${{ inputs.container }}
-        source: ./build
+        source: "${{ steps.tempdir.outputs.build_workspace }}/"
