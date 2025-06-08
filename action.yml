@@ -18,7 +18,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create Workspace
+    - name: Create Artifact Workspace
+      id: artifactworkspace
       shell: bash
       run: |
         GUID=$(uuidgen)
@@ -31,11 +32,11 @@ runs:
       uses: actions/download-artifact@v4.3.0
       with:
         name: ${{ inputs.artifact }}
-        path: ${{ steps.tempdir.outputs.build_workspace }}
+        path: ${{ steps.artifactworkspace.outputs.build_workspace }}
 
     - name: Activate the frontend      
       uses: CoreHelpers/upload-spa-to-azure-blob@v0.0.1
       with:       
         connectionstring: ${{ inputs.connectionstring }}
         container: ${{ inputs.container }}
-        source: "${{ steps.tempdir.outputs.build_workspace }}/"
+        source: "${{ steps.artifactworkspace.outputs.build_workspace }}/"
